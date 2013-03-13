@@ -25,6 +25,9 @@
         <module name="osrs-client" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="osrs-client" target="1.6" />
+    </bytecodeTargetLevel>
   </component>
 </project>
 
