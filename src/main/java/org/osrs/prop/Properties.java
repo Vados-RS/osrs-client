@@ -1,4 +1,4 @@
-package org.prop;
+package org.osrs.prop;
 
 import java.io.*;
 import java.util.HashMap;

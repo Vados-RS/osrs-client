@@ -1,4 +1,4 @@
-package org.upd;
+package org.osrs.upd;
 
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.Field;
@@ -10,8 +10,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHttpRequest;
-import org.prop.Properties;
-import org.prop.Section;
+import org.osrs.prop.Properties;
+import org.osrs.prop.Section;
 
 import java.io.File;
 import java.io.FileOutputStream;

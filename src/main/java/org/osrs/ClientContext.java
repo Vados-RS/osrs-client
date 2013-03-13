@@ -1,4 +1,4 @@
-package org;
+package org.osrs;
 
 import javax.swing.*;
 import java.applet.Applet;

@@ -1,4 +1,4 @@
-package org;
+package org.osrs;
 
 import java.applet.AppletContext;
 import java.applet.AppletStub;

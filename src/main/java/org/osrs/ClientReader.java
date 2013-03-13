@@ -1,15 +1,14 @@
-package org;
+package org.osrs;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.*;
-import org.apache.http.params.*;
 import org.apache.http.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.prop.Section;
+import org.osrs.prop.Section;
 
 import java.applet.Applet;
 import java.lang.reflect.Field;

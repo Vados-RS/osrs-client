@@ -1,8 +1,8 @@
-package org;
+package org.osrs;
 
-import org.prop.Properties;
-import org.prop.Section;
-import org.upd.Updater;
+import org.osrs.prop.Properties;
+import org.osrs.prop.Section;
+import org.osrs.upd.Updater;
 
 import javax.swing.*;
 import java.applet.Applet;
