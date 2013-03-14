@@ -41,7 +41,7 @@ public class ClientStub extends AbstractAppletStub {
 
     public String getParameter(String name) {
         String param = params.get(name);
-        if(param.indexOf("slr.ws") > 0 && usealt)
+        if (param.indexOf("slr.ws") > 0 && usealt)
             param = alturl;
         return param;
     }

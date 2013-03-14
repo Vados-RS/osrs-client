@@ -33,8 +33,8 @@ public class ParamParser {
         URL url = new URL(props.getSection("launcher").getProperty("base_url") + "/jav_config.ws");
         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
         String line;
-        while((line = in.readLine()) != null) {// begin best parsing world
-            if(line.startsWith("param=")) {
+        while ((line = in.readLine()) != null) {// begin best parsing world
+            if (line.startsWith("param=")) {
                 String combination = line.substring(6);
                 section.putProperty(combination.substring(0, combination.indexOf('=')),
                         combination.substring(combination.indexOf('=') + 1));

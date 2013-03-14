@@ -5,7 +5,9 @@ import org.jruby.RubyString;
 import org.jruby.RubySymbol;
 import org.osrs.plugin.PluginManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * User: Johan

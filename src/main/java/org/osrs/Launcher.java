@@ -35,7 +35,7 @@ public class Launcher {
         scriptThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true) {
+                while (true) {
                     try {
                         EventManager.getInstance().tick();
                         Thread.sleep(100);
@@ -51,7 +51,7 @@ public class Launcher {
 
         try {
             props.load("oldrsclient.properties");
-        } catch(FileNotFoundException ex) {
+        } catch (FileNotFoundException ex) {
             System.err.println("Properties file not found! Generating default settings");
             props = DefaultProperties.get();
             props.save("oldrsclient.properties");
@@ -66,13 +66,13 @@ public class Launcher {
         Launcher launcher = new Launcher();
 
         Applet applet = null;
-        while(applet == null) {
+        while (applet == null) {
             try {
-                if(!new File("gamepack.jar").exists())
+                if (!new File("gamepack.jar").exists())
                     throw new Exception("");
                 applet = launcher.loadGame(new ClientStub(props.getSection("applet").getEntries(), baseURL, baseURL));
-            } catch(Exception ex) {
-                if(classLoader != null)
+            } catch (Exception ex) {
+                if (classLoader != null)
                     classLoader.close();
                 System.err.println("Unable to load applet!");
                 Updater upd = new Updater();
@@ -111,7 +111,7 @@ public class Launcher {
 
     public Applet loadGame(AbstractAppletStub appletStub)
             throws MalformedURLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-        classLoader = new URLClassLoader(new URL[] {new File("gamepack.jar").toURI().toURL()});
+        classLoader = new URLClassLoader(new URL[]{new File("gamepack.jar").toURI().toURL()});
         Class<?> appletClass = classLoader.loadClass("client");
         Applet applet = (Applet) appletClass.newInstance();
         applet.setStub(appletStub);

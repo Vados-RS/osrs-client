@@ -22,13 +22,12 @@ public class Properties {
         String line;
         String currentSectionName = "";
         Section currentSection = null;
-        while((line = in.readLine()) != null) {// top lel
-            if(line.startsWith("[") && line.endsWith("]")) {
+        while ((line = in.readLine()) != null) {// top lel
+            if (line.startsWith("[") && line.endsWith("]")) {
                 currentSectionName = line.substring(1, line.length() - 1);
                 currentSection = new Section(currentSectionName);
                 sections.put(currentSectionName, currentSection);
-            }
-            else if(!currentSectionName.equals("") &&
+            } else if (!currentSectionName.equals("") &&
                     line.indexOf('=') > 0 && !line.startsWith("#")) {
                 String key = line.substring(0, line.indexOf('='));
                 String value = line.substring(line.indexOf('=') + 1, line.length());
@@ -40,6 +39,7 @@ public class Properties {
 
     /**
      * Load a property file
+     *
      * @param filename
      * @throws IOException
      */
@@ -49,13 +49,12 @@ public class Properties {
         String line;
         String currentSectionName = "";
         Section currentSection = null;
-        while((line = in.readLine()) != null) {// top lel
-            if(line.startsWith("[") && line.endsWith("]")) {
+        while ((line = in.readLine()) != null) {// top lel
+            if (line.startsWith("[") && line.endsWith("]")) {
                 currentSectionName = line.substring(1, line.length() - 1);
                 currentSection = new Section(currentSectionName);
                 sections.put(currentSectionName, currentSection);
-            }
-            else if(!currentSectionName.equals("") &&
+            } else if (!currentSectionName.equals("") &&
                     line.indexOf('=') > 0 && !line.startsWith("#")) {
                 String key = line.substring(0, line.indexOf('='));
                 String value = line.substring(line.indexOf('=') + 1, line.length());
@@ -67,28 +66,30 @@ public class Properties {
 
     /**
      * Get a section by its name
+     *
      * @param sectionName
-     * @throws IllegalArgumentException if no such section exists
      * @return
+     * @throws IllegalArgumentException if no such section exists
      */
     public Section getSection(String sectionName) {
-        if(!sections.containsKey(sectionName))
+        if (!sections.containsKey(sectionName))
             throw new IllegalArgumentException("No section: " + sectionName);
         return sections.get(sectionName);
     }
 
     /**
      * Write the property entries into a file
+     *
      * @param filename
      * @throws IOException
      */
     public void save(String filename) throws IOException {
         PrintWriter out = new PrintWriter(new FileWriter(filename));
-        for(Map.Entry<String, Section> sectionEntry : sections.entrySet()) {
+        for (Map.Entry<String, Section> sectionEntry : sections.entrySet()) {
             String sectionName = sectionEntry.getKey();
             Section section = sectionEntry.getValue();
             out.println("[" + sectionName + "]");
-            for(Map.Entry<String, String> entry : section.getEntries().entrySet()) {
+            for (Map.Entry<String, String> entry : section.getEntries().entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
                 out.println(key + "=" + value);
@@ -100,6 +101,7 @@ public class Properties {
 
     /**
      * Adds a new section entry and replaces an already existing one with the same name if it exists
+     *
      * @param section
      */
     public void putSection(Section section) {
@@ -108,12 +110,13 @@ public class Properties {
 
     /**
      * Adds a new section entry, or replaces an already existing one with the same name if it exists
+     *
      * @param section
      * @param overwrite whether to overwrite or not if match is found
      */
 
     public void putSection(Section section, boolean overwrite) {
-        if(!overwrite && sections.containsKey(section.getName()))
+        if (!overwrite && sections.containsKey(section.getName()))
             throw new IllegalArgumentException("Section " + section.getName() + " already exists");
         sections.put(section.getName(), section);
     }
@@ -127,7 +130,7 @@ public class Properties {
     }
 
     public void reload() throws IOException {
-        for(Map.Entry<String, Section> entry : sections.entrySet())
+        for (Map.Entry<String, Section> entry : sections.entrySet())
             entry.getValue().clear();// probably not necessary
         sections.clear();
         load(filename);

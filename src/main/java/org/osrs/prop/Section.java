@@ -22,7 +22,7 @@ public class Section {
     }
 
     public String getProperty(String key) {
-        if(!entries.containsKey(key))
+        if (!entries.containsKey(key))
             throw new IllegalArgumentException();
         return entries.get(key);
     }

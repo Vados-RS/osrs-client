@@ -1,11 +1,11 @@
 package org.osrs;
 
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.*;
-import org.apache.http.*;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.osrs.prop.Section;
@@ -21,41 +21,41 @@ import java.util.regex.Pattern;
 
 /**
  * todo: use arrays, maybe
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
  * TGUS US ALL SO BAAAAAAAAAAAAAAAAAAAAAAD
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
  * oldrsclient
  * 5.3.2013
  */
@@ -75,14 +75,13 @@ public class ClientReader implements Runnable {
         Section clientSection = Launcher.getProps().getSection("client");
         Section fieldSection = Launcher.getProps().getSection("fields");
 
-        if(!Boolean.parseBoolean(clientSection.getProperty("api_active")))
+        if (!Boolean.parseBoolean(clientSection.getProperty("api_active")))
             return;
 
         Map<String, Field> fields = new HashMap<String, Field>();
         String playerClass = null, entityClass = null, entityX = null, entityY = null, playerName = null;
         int areaXMultiplier = 0, areaYMultiplier = 0, entityXMultiplier = 0, entityYMultiplier = 0;
-        Field fMessageSenders = null, fMessageTypes = null, fMessages = null, fPlayers = null
-                , fLocalPlayer = null, fAreaX = null, fAreaY = null;
+        Field fMessageSenders = null, fMessageTypes = null, fMessages = null, fPlayers = null, fLocalPlayer = null, fAreaX = null, fAreaY = null;
         try {
             playerClass = fieldSection.getProperty("player_class");
             loadClass(playerClass);
@@ -99,7 +98,7 @@ public class ClientReader implements Runnable {
             String val = fieldSection.getProperty("chat_message_senders");
             String clazz = val.substring(0, val.indexOf('.'));
             String field = val.substring(val.indexOf('.') + 1);
-            if(clazz.equals("client"))
+            if (clazz.equals("client"))
                 fMessageSenders = getField(field);
             else
                 fMessageSenders = getField(loadClass(clazz), field);
@@ -108,7 +107,7 @@ public class ClientReader implements Runnable {
             val = fieldSection.getProperty("chat_message_types");
             clazz = val.substring(0, val.indexOf('.'));
             field = val.substring(val.indexOf('.') + 1);
-            if(clazz.equals("client"))
+            if (clazz.equals("client"))
                 fMessageTypes = getField(field);
             else
                 fMessageTypes = getField(loadClass(clazz), field);
@@ -117,7 +116,7 @@ public class ClientReader implements Runnable {
             val = fieldSection.getProperty("chat_messages");
             clazz = val.substring(0, val.indexOf('.'));
             field = val.substring(val.indexOf('.') + 1);
-            if(clazz.equals("client"))
+            if (clazz.equals("client"))
                 fMessages = getField(field);
             else
                 fMessages = getField(loadClass(clazz), field);
@@ -126,7 +125,7 @@ public class ClientReader implements Runnable {
             val = fieldSection.getProperty("area_x");
             clazz = val.substring(0, val.indexOf('.'));
             field = val.substring(val.indexOf('.') + 1);
-            if(clazz.equals("client"))
+            if (clazz.equals("client"))
                 fAreaX = getField(field);
             else
                 fAreaX = getField(loadClass(clazz), field);
@@ -135,7 +134,7 @@ public class ClientReader implements Runnable {
             val = fieldSection.getProperty("area_y");
             clazz = val.substring(0, val.indexOf('.'));
             field = val.substring(val.indexOf('.') + 1);
-            if(clazz.equals("client"))
+            if (clazz.equals("client"))
                 fAreaY = getField(field);
             else
                 fAreaY = getField(loadClass(clazz), field);
@@ -144,7 +143,7 @@ public class ClientReader implements Runnable {
             val = fieldSection.getProperty("players");
             clazz = val.substring(0, val.indexOf('.'));
             field = val.substring(val.indexOf('.') + 1);
-            if(clazz.equals("client"))
+            if (clazz.equals("client"))
                 fPlayers = getField(field);
             else
                 fPlayers = getField(loadClass(clazz), field);
@@ -153,12 +152,12 @@ public class ClientReader implements Runnable {
             val = fieldSection.getProperty("local_player");
             clazz = val.substring(0, val.indexOf('.'));
             field = val.substring(val.indexOf('.') + 1);
-            if(clazz.equals("client"))
+            if (clazz.equals("client"))
                 fLocalPlayer = getField(field);
             else
                 fLocalPlayer = getField(loadClass(clazz), field);
             fLocalPlayer.setAccessible(true);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             System.err.println("CLIENTREADER> Unable to find fields, stopping");
             running = false;
@@ -175,7 +174,7 @@ public class ClientReader implements Runnable {
 
         List<Message> messages = new ArrayList<Message>();
         List<Message> lastMessages = new ArrayList<Message>();
-        while(running) {
+        while (running) {
             try {
                 Thread.sleep(5000);
                 String msg[] = (String[]) fMessages.get(null);
@@ -186,51 +185,51 @@ public class ClientReader implements Runnable {
                 int areay = (Integer) fAreaY.get(null);
 
                 messages.clear();
-                for(int i = 0; i < type.length; i++) {
-                    if(type[i] == 2) {// public messages only
+                for (int i = 0; i < type.length; i++) {
+                    if (type[i] == 2) {// public messages only
                         String sender = snd[i];
                         String message = msg[i].toLowerCase();
                         int playeridx = -1;
-                        for(int j = 0; j < players.length; j++) {
-                            if(players[j] != null)// && ((String) getField((players[j]).getClass(), playerName).get(players[j])).equalsIgnoreCase(sender))
+                        for (int j = 0; j < players.length; j++) {
+                            if (players[j] != null)// && ((String) getField((players[j]).getClass(), playerName).get(players[j])).equalsIgnoreCase(sender))
                                 playeridx = j;
                         }
                         //if(playeridx == -1) {
                         //    continue;
                         //}
                         int calcx = 0, calcy = 0;
-                        if(playeridx != -1) {
+                        if (playeridx != -1) {
                             int playerX = (Integer) getField(players[playeridx].getClass().getSuperclass(), entityX).get(players[playeridx]);
                             int playerY = (Integer) getField(players[playeridx].getClass().getSuperclass(), entityY).get(players[playeridx]);
 
                             calcx = (entityXMultiplier * playerX >> 7) + areaXMultiplier * areax;
                             calcy = (entityYMultiplier * playerY >> 7) + areaYMultiplier * areay;
                         }
-                        if(!chatPattern.matcher(message).matches())
+                        if (!chatPattern.matcher(message).matches())
                             continue;
                         messages.add(new Message(snd[i], msg[i], type[i], calcx, calcy, System.currentTimeMillis() / 1000L));
                     }
                 }
-                if(lastMessages.size() > 100)
-                    for(int i = 100; i < lastMessages.size(); i++)
+                if (lastMessages.size() > 100)
+                    for (int i = 100; i < lastMessages.size(); i++)
                         lastMessages.remove(i);
-                if(messages.size() > 0) {
+                if (messages.size() > 0) {
                     messages.removeAll(lastMessages);
                     lastMessages.addAll(messages);
 
-                    if(messages.size() == 0)
+                    if (messages.size() == 0)
                         continue;
 
                     JSONObject jsonData = new JSONObject();
                     jsonData.put("source", "officialclient");
                     JSONArray jsonMessages = new JSONArray();
-                    for(Message m : messages) {
+                    for (Message m : messages) {
                         JSONObject jsonMessage = new JSONObject();
                         jsonMessage.put("sender", m.sender);
                         jsonMessage.put("message", m.message);
-                        if(m.playerx != 0)
+                        if (m.playerx != 0)
                             jsonMessage.put("x", m.playerx);
-                        if(m.playery != 0)
+                        if (m.playery != 0)
                             jsonMessage.put("y", m.playery);
                         jsonMessage.put("time", m.time);
                         jsonMessages.add(jsonMessage);
@@ -242,7 +241,7 @@ public class ClientReader implements Runnable {
                     post.setEntity(new UrlEncodedFormEntity(constructParameters(apiKey, URLEncoder.encode(jsonData.toJSONString(), "UTF-8"))));
                     httpClient.execute(post);
                 }
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
                 System.err.println("CLIENTREADER> " + ex);
                 ex.printStackTrace();
@@ -258,7 +257,7 @@ public class ClientReader implements Runnable {
     }
 
     private Class<?> loadClass(String name) throws ClassNotFoundException {
-        if(loadedClasses.containsKey(name))
+        if (loadedClasses.containsKey(name))
             return loadedClasses.get(name);
         Class<?> clazz = Launcher.getClassLoader().loadClass(name);
         loadedClasses.put(name, clazz);
@@ -276,18 +275,17 @@ public class ClientReader implements Runnable {
     }
 
 
-
     public List<Message> removeDuplicates(List<Message> list, List<Message> oldList) {
         List<Message> newList = new ArrayList<Message>();
-        for(Message old : oldList) {
+        for (Message old : oldList) {
             boolean add = true;
-            for(Message msg : list) {
-                if(msg.equals(old)) {
+            for (Message msg : list) {
+                if (msg.equals(old)) {
                     add = false;
                     break;
                 }
             }
-            if(add)
+            if (add)
                 newList.add(old);
         }
         return newList;

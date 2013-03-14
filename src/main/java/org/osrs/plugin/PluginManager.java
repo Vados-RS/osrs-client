@@ -39,7 +39,11 @@ public class PluginManager {
 
     public void loadScripts() {
         File root = new File("./scripts");
-        for (File f : root.listFiles(new FilenameFilter() {public boolean accept(File dir, String name) {return name.endsWith(".rb");}})) {
+        for (File f : root.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".rb");
+            }
+        })) {
             container.runScriptlet(PathType.ABSOLUTE, f.getAbsolutePath());
         }
     }

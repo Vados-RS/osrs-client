@@ -29,25 +29,22 @@ import java.util.jar.JarFile;
 
 /**
  * todo: absolutely disgusting
- *
- *
- *
- *
- *
- *
- *
- *
- *
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
  * oldrsclient
  * 10.3.2013
  */
 public class Updater {
 
-    private String playersName = null, localPlayerName = null, playerClassName = null, entityClassName = null
-            , entityXYName[] = new String[2], areaXYName[] = new String[2], chatMessageTypes = null
-            , chatMessageSenders = null, chatMessages = null, playerName = null;
-    private ObjectType playersType = null, localPlayerType = null, entityXYType[] = new ObjectType[2]
-            , areaXYType[] = new ObjectType[2];
+    private String playersName = null, localPlayerName = null, playerClassName = null, entityClassName = null, entityXYName[] = new String[2], areaXYName[] = new String[2], chatMessageTypes = null, chatMessageSenders = null, chatMessages = null, playerName = null;
+    private ObjectType playersType = null, localPlayerType = null, entityXYType[] = new ObjectType[2], areaXYType[] = new ObjectType[2];
     private int entityXYMultiplier[] = new int[2], areaXYMultiplier[] = new int[2];
 
     private void downloadFile(URL url, String outFilename) throws IOException {
@@ -70,23 +67,23 @@ public class Updater {
         List<String> classes = new ArrayList<String>();
         JarFile jar = new JarFile("gamepack.jar.temp");
         Enumeration<JarEntry> entries = jar.entries();
-        while(entries.hasMoreElements()) {
+        while (entries.hasMoreElements()) {
             JarEntry next = entries.nextElement();
-            if(next.getName().endsWith(".class"))
+            if (next.getName().endsWith(".class"))
                 classes.add(next.getName());
         }
         jar.close();
         System.out.println("Searching for field references");
-        for(String s : classes) {// IT'S BECAUSE WE NEED THESE VALUES BEFORE GOING TO THE NEXT MAGICAL PART
+        for (String s : classes) {// IT'S BECAUSE WE NEED THESE VALUES BEFORE GOING TO THE NEXT MAGICAL PART
             try {
                 ClassGen cg = new ClassGen(new ClassParser(jar.getName(), s).parse());
-                for(Method m : cg.getMethods()) {
+                for (Method m : cg.getMethods()) {
                     MethodGen mg = new MethodGen(m, cg.getClassName(), cg.getConstantPool());
-                    if(mg.isAbstract() || mg.isInterface() || mg.isEnum() || mg.getInstructionList().isEmpty())
+                    if (mg.isAbstract() || mg.isInterface() || mg.isEnum() || mg.getInstructionList().isEmpty())
                         continue;
                     Iterator<InstructionHandle[]> it = new InstructionFinder(mg.getInstructionList())
                             .search("GETSTATIC ConstantPushInstruction NEW StackInstruction INVOKESPECIAL StackInstruction AASTORE PUTSTATIC");
-                    if(it.hasNext()) {
+                    if (it.hasNext()) {
                         InstructionHandle match[] = it.next();
                         GETSTATIC g = (GETSTATIC) match[0].getInstruction();
                         PUTSTATIC p = (PUTSTATIC) match[7].getInstruction();
@@ -98,17 +95,17 @@ public class Updater {
                         playerClassName = n.getLoadClassType(cg.getConstantPool()).getClassName();
                     }
                 }
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-        for(String s : classes) {// HERE IS THE NEXT MAGICAL PART
+        for (String s : classes) {// HERE IS THE NEXT MAGICAL PART
             try {
                 ClassGen cg = new ClassGen(new ClassParser(jar.getName(), s).parse());
-                if(cg.getClassName().equals(playerClassName))
+                if (cg.getClassName().equals(playerClassName))
                     entityClassName = cg.getSuperclassName();// :)
                 find(cg);
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
@@ -145,74 +142,74 @@ public class Updater {
     }
 
     private void find(ClassGen cg) {
-        if(cg.getClassName().equals(playerClassName)) {
-            for(Field f : cg.getFields()) {
+        if (cg.getClassName().equals(playerClassName)) {
+            for (Field f : cg.getFields()) {
                 FieldGen fg = new FieldGen(f, cg.getConstantPool());
-                if(fg.getType().equals(Type.STRING)) {
+                if (fg.getType().equals(Type.STRING)) {
                     playerName = fg.getName();
                 }
             }
         }
-        for(Method m : cg.getMethods()) {
+        for (Method m : cg.getMethods()) {
             MethodGen mg = new MethodGen(m, cg.getClassName(), cg.getConstantPool());
-            if(mg.isAbstract() || mg.isInterface() || mg.isEnum() || mg.getInstructionList().isEmpty())
+            if (mg.isAbstract() || mg.isInterface() || mg.isEnum() || mg.getInstructionList().isEmpty())
                 continue;
             Type argtypes[] = mg.getArgumentTypes();// very vVERVVERY SPECIFIC 1!!1121
-            if(argtypes.length < 4 || !argtypes[0].equals(Type.INT) || !argtypes[1].equals(Type.STRING) || !argtypes[2].equals(Type.STRING) || !argtypes[3].equals(Type.STRING))
+            if (argtypes.length < 4 || !argtypes[0].equals(Type.INT) || !argtypes[1].equals(Type.STRING) || !argtypes[2].equals(Type.STRING) || !argtypes[3].equals(Type.STRING))
                 continue;
             Iterator<InstructionHandle[]> it = new InstructionFinder(mg.getInstructionList())
                     .search("GETSTATIC ICONST (ILOAD|ALOAD)");
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 InstructionHandle match[] = it.next();
                 ICONST iconst = (ICONST) match[1].getInstruction();
-                if(iconst.getValue().intValue() != 0)
+                if (iconst.getValue().intValue() != 0)
                     continue;
                 LocalVariableInstruction load = (LocalVariableInstruction) match[2].getInstruction();
                 GETSTATIC get = (GETSTATIC) match[0].getInstruction();
-                if(load.getIndex() == 0 && chatMessageTypes == null)
+                if (load.getIndex() == 0 && chatMessageTypes == null)
                     chatMessageTypes = get.getLoadClassType(cg.getConstantPool()) + "." + get.getFieldName(cg.getConstantPool());
-                else if(load.getIndex() == 1 && chatMessageSenders == null)
+                else if (load.getIndex() == 1 && chatMessageSenders == null)
                     chatMessageSenders = get.getLoadClassType(cg.getConstantPool()) + "." + get.getFieldName(cg.getConstantPool());
-                else if(load.getIndex() == 2 && chatMessages == null)
+                else if (load.getIndex() == 2 && chatMessages == null)
                     chatMessages = get.getLoadClassType(cg.getConstantPool()) + "." + get.getFieldName(cg.getConstantPool());
             }
         }
-        for(Method m : cg.getMethods()) {// yep yep yep
+        for (Method m : cg.getMethods()) {// yep yep yep
             MethodGen mg = new MethodGen(m, cg.getClassName(), cg.getConstantPool());
-            if(mg.isAbstract() || mg.isInterface() || mg.isEnum() || mg.getInstructionList().isEmpty())
+            if (mg.isAbstract() || mg.isInterface() || mg.isEnum() || mg.getInstructionList().isEmpty())
                 continue;
             Iterator<InstructionHandle[]> it = new InstructionFinder(mg.getInstructionList())
                     // BIPUSH IfInstruction (LDC|GETSTATIC) (GETSTATIC|GETFIELD) (LDC|GETFIELD) IMUL BIPUSH ISHR (LDC|GETSTATIC) (LDC|GETSTATIC)
                     .search("(BIPUSH|ILOAD) (BIPUSH|ILOAD) IfInstruction Instruction Instruction Instruction IMUL BIPUSH ISHR Instruction Instruction IMUL IADD");
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 InstructionHandle match[] = it.next();
                 int entmulti = 0;
                 GETSTATIC pget = null;
                 GETFIELD entfield = null;
-                for(int i = 3; i < 6; i++) {
+                for (int i = 3; i < 6; i++) {
                     Instruction inst = match[i].getInstruction();
-                    if(inst instanceof LDC)
+                    if (inst instanceof LDC)
                         entmulti = (Integer) ((LDC) inst).getValue(cg.getConstantPool());
-                    else if(inst instanceof GETSTATIC)
+                    else if (inst instanceof GETSTATIC)
                         pget = (GETSTATIC) inst;
-                    else if(inst instanceof GETFIELD)
+                    else if (inst instanceof GETFIELD)
                         entfield = (GETFIELD) inst;
                 }
                 int areamulti = 0;
                 GETSTATIC areaget = null;
-                for(int i = 9; i < 11; i++) {
+                for (int i = 9; i < 11; i++) {
                     Instruction inst = match[i].getInstruction();
-                    if(inst instanceof LDC)
+                    if (inst instanceof LDC)
                         areamulti = (Integer) ((LDC) inst).getValue(cg.getConstantPool());
-                    else if(inst instanceof GETSTATIC)
+                    else if (inst instanceof GETSTATIC)
                         areaget = (GETSTATIC) inst;
                 }
                 int val;
-                if(match[0].getInstruction() instanceof BIPUSH)
+                if (match[0].getInstruction() instanceof BIPUSH)
                     val = ((BIPUSH) match[0].getInstruction()).getValue().intValue();
                 else
                     val = ((BIPUSH) match[1].getInstruction()).getValue().intValue();
-                if((entmulti == 0 || pget == null || entfield == null || areamulti == 0 || areaget == null)
+                if ((entmulti == 0 || pget == null || entfield == null || areamulti == 0 || areaget == null)
                         || !pget.getFieldName(cg.getConstantPool()).equals(localPlayerName)
                         || !pget.getLoadClassType(cg.getConstantPool()).equals(localPlayerType))
                     continue;
@@ -227,35 +224,35 @@ public class Updater {
             it = new InstructionFinder(mg.getInstructionList())
                     // BIPUSH IfInstruction (LDC|GETSTATIC) (LDC|GETSTATIC) IMUL (LDC|GETSTATIC) (GETSTATIC|GETFIELD) (LDC|GETFIELD)
                     .search("(BIPUSH|ILOAD) (BIPUSH|ILOAD) IfInstruction Instruction Instruction IMUL Instruction Instruction Instruction IMUL BIPUSH ISHR IADD");
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 InstructionHandle match[] = it.next();
                 int areamulti = 0;
                 GETSTATIC areaget = null;
-                for(int i = 3; i < 5; i++) {
+                for (int i = 3; i < 5; i++) {
                     Instruction inst = match[i].getInstruction();
-                    if(inst instanceof LDC)
+                    if (inst instanceof LDC)
                         areamulti = (Integer) ((LDC) inst).getValue(cg.getConstantPool());
-                    else if(inst instanceof GETSTATIC)
+                    else if (inst instanceof GETSTATIC)
                         areaget = (GETSTATIC) inst;
                 }
                 int entmulti = 0;
                 GETSTATIC pget = null;
                 GETFIELD entfield = null;
-                for(int i = 6; i < 9; i++) {
+                for (int i = 6; i < 9; i++) {
                     Instruction inst = match[i].getInstruction();
-                    if(inst instanceof LDC)
+                    if (inst instanceof LDC)
                         entmulti = (Integer) ((LDC) inst).getValue(cg.getConstantPool());
-                    else if(inst instanceof GETSTATIC)
+                    else if (inst instanceof GETSTATIC)
                         pget = (GETSTATIC) inst;
-                    else if(inst instanceof GETFIELD)
+                    else if (inst instanceof GETFIELD)
                         entfield = (GETFIELD) inst;
                 }
                 int val;
-                if(match[0].getInstruction() instanceof BIPUSH)
+                if (match[0].getInstruction() instanceof BIPUSH)
                     val = ((BIPUSH) match[0].getInstruction()).getValue().intValue();
                 else
                     val = ((BIPUSH) match[1].getInstruction()).getValue().intValue();
-                if((entmulti == 0 || pget == null || entfield == null || areamulti == 0 || areaget == null)
+                if ((entmulti == 0 || pget == null || entfield == null || areamulti == 0 || areaget == null)
                         || !pget.getFieldName(cg.getConstantPool()).equals(localPlayerName)
                         || !pget.getLoadClassType(cg.getConstantPool()).equals(localPlayerType))
                     continue;
@@ -271,35 +268,35 @@ public class Updater {
             it = new InstructionFinder(mg.getInstructionList())
                     // BIPUSH IfInstruction (LDC|GETSTATIC) (LDC|GETSTATIC) IMUL (LDC|GETSTATIC) (GETSTATIC|GETFIELD) (LDC|GETFIELD)
                     .search("(BIPUSH|ILOAD) (BIPUSH|ILOAD) IfInstruction (BIPUSH|ILOAD) (BIPUSH|ILOAD) IfInstruction NEW StackInstruction INVOKESPECIAL ATHROW Instruction Instruction IMUL Instruction Instruction Instruction IMUL BIPUSH ISHR IADD");
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 InstructionHandle match[] = it.next();
                 int areamulti = 0;
                 GETSTATIC areaget = null;
-                for(int i = 10; i < 12; i++) {
+                for (int i = 10; i < 12; i++) {
                     Instruction inst = match[i].getInstruction();
-                    if(inst instanceof LDC)
+                    if (inst instanceof LDC)
                         areamulti = (Integer) ((LDC) inst).getValue(cg.getConstantPool());
-                    else if(inst instanceof GETSTATIC)
+                    else if (inst instanceof GETSTATIC)
                         areaget = (GETSTATIC) inst;
                 }
                 int entmulti = 0;
                 GETSTATIC pget = null;
                 GETFIELD entfield = null;
-                for(int i = 13; i < 16; i++) {
+                for (int i = 13; i < 16; i++) {
                     Instruction inst = match[i].getInstruction();
-                    if(inst instanceof LDC)
+                    if (inst instanceof LDC)
                         entmulti = (Integer) ((LDC) inst).getValue(cg.getConstantPool());
-                    else if(inst instanceof GETSTATIC)
+                    else if (inst instanceof GETSTATIC)
                         pget = (GETSTATIC) inst;
-                    else if(inst instanceof GETFIELD)
+                    else if (inst instanceof GETFIELD)
                         entfield = (GETFIELD) inst;
                 }
                 int val;
-                if(match[0].getInstruction() instanceof BIPUSH)
+                if (match[0].getInstruction() instanceof BIPUSH)
                     val = ((BIPUSH) match[0].getInstruction()).getValue().intValue();
                 else
                     val = ((BIPUSH) match[1].getInstruction()).getValue().intValue();
-                if((entmulti == 0 || pget == null || entfield == null || areamulti == 0 || areaget == null)
+                if ((entmulti == 0 || pget == null || entfield == null || areamulti == 0 || areaget == null)
                         || !pget.getFieldName(cg.getConstantPool()).equals(localPlayerName)
                         || !pget.getLoadClassType(cg.getConstantPool()).equals(localPlayerType))
                     continue;
