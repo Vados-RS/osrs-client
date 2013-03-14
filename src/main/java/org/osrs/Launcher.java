@@ -75,6 +75,8 @@ public class Launcher {
                 if(classLoader != null)
                     classLoader.close();
                 System.err.println("Unable to load applet!");
+                Updater upd = new Updater();
+                upd.update();
             }
         }
 
