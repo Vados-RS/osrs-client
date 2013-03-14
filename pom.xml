@@ -4,9 +4,13 @@
     <groupId>org.osrs.client</groupId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
-    <scm>
-        <developerConnection>scm:git:https://github.com/runefeed/osrs-client.git</developerConnection>
-    </scm>
+    <distributionManagement>
+        <repository>
+            <id>master</id>
+            <name>Master Repo</name>
+            <url>https://github.com/runefeed/osrs-client.git</url>
+        </repository>
+    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
@@ -105,7 +109,33 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <outputDirectory>/home/runefeed/Dropbox/Public/builds</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>*.zip</include>
+                                    </includes>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-        <finalName>osrs-client-0.1.0r${buildNumber}</finalName>
+        <finalName>osrs-client-0.1.0-SNAPSHOT</finalName>
     </build>
 </project>
