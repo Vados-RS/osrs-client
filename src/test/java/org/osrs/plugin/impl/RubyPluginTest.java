@@ -4,6 +4,9 @@ import org.jruby.CompatVersion;
 import org.jruby.embed.LocalContextScope;
 import org.jruby.embed.PathType;
 import org.jruby.embed.ScriptingContainer;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.osrs.event.EventManager;
 
 import java.util.ArrayList;
@@ -14,13 +17,11 @@ import java.util.List;
  * Date: 2013-03-14
  * Time: 11:02
  */
+@RunWith(JUnit4.class)
 public class RubyPluginTest {
 
-    public static void main(String[] args) {
-        new RubyPluginTest();
-    }
-
-    public RubyPluginTest() {
+    @Test
+    public void scriptTest() {
         ScriptingContainer container = new ScriptingContainer(LocalContextScope.SINGLETON);
         container.setCompatVersion(CompatVersion.RUBY2_0);
 
@@ -32,5 +33,6 @@ public class RubyPluginTest {
         EventManager.getInstance().trigger("data_test", 600);
         EventManager.getInstance().trigger("init");
         EventManager.getInstance().tick();
+        org.junit.Assert.assertTrue(true); // TODO: Fix this later.
     }
 }
