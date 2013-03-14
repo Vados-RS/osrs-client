@@ -1,5 +1,7 @@
 package org.osrs;
 
+import org.osrs.event.EventManager;
+import org.osrs.plugin.PluginManager;
 import org.osrs.prop.Properties;
 import org.osrs.prop.Section;
 import org.osrs.upd.Updater;
@@ -7,6 +9,8 @@ import org.osrs.upd.Updater;
 import javax.swing.*;
 import java.applet.Applet;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,8 +26,25 @@ public class Launcher {
     private static ClientReader clientReader;
     private static Thread clientThread;
     private static URLClassLoader classLoader;
+    private static Thread scriptThread;
 
     public static void main(String args[]) throws Exception {// no exceptio nhandling 4 u
+        PluginManager.getInstance().loadScripts();
+        scriptThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    try {
+                        EventManager.getInstance().tick();
+                        Thread.sleep(100);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        scriptThread.start();
+        EventManager.getInstance().trigger("init");
         props = new Properties();
         props.load("oldrsclient.properties");
 
@@ -52,7 +73,7 @@ public class Launcher {
         clientThread = new Thread(clientReader);
         clientThread.start();
 
-        JFrame frame = new JFrame("Old School RuneScape Game");
+        JFrame frame = new JFrame("Old School RuneScape Client");
 
         Container frameContainer = frame.getContentPane();
         GridBagLayout gridBagLayout = new GridBagLayout();
@@ -65,9 +86,16 @@ public class Launcher {
         frameContainer.setBackground(Color.black);
         frame.setContentPane(frameContainer);
         frame.pack();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                EventManager.getInstance().trigger("terminate");
+                System.exit(0);
+            }
+        });
+        EventManager.getInstance().trigger("rs_init");
     }
 
     public Applet loadGame(AbstractAppletStub appletStub)

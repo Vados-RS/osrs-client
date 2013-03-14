@@ -1,6 +1,5 @@
 package org.osrs;
 
-import javax.swing.*;
 import java.applet.Applet;
 import java.applet.AppletContext;
 import java.applet.AudioClip;
