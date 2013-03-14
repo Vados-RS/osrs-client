@@ -1,5 +1,7 @@
 package org.osrs;
 
+import org.osrs.upd.Updater;
+
 import java.applet.Applet;
 import java.applet.AppletContext;
 import java.applet.AudioClip;
@@ -37,10 +39,24 @@ public class ClientContext implements AppletContext {
 
     public void showDocument(URL url) {
         System.out.println("APPLET> ClientContext.showDocument(\"" + url + "\")");
+        Updater upd = new Updater();
+        try {
+            upd.update();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
     }
 
     public void showDocument(URL url, String target) {
         System.out.println("APPLET> ClientContext.showDocument(\"" + url + "\", \"" + target + "\")");
+        Updater upd = new Updater();
+        try {
+            upd.update();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
     }
 
     public void showStatus(String status) {

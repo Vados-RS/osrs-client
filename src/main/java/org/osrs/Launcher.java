@@ -2,6 +2,7 @@ package org.osrs;
 
 import org.osrs.event.EventManager;
 import org.osrs.plugin.PluginManager;
+import org.osrs.prop.DefaultProperties;
 import org.osrs.prop.Properties;
 import org.osrs.prop.Section;
 import org.osrs.upd.Updater;
@@ -12,6 +13,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -46,7 +48,16 @@ public class Launcher {
         scriptThread.start();
         EventManager.getInstance().trigger("init");
         props = new Properties();
-        props.load("oldrsclient.properties");
+
+        try {
+            props.load("oldrsclient.properties");
+        } catch(FileNotFoundException ex) {
+            System.err.println("Properties file not found! Generating default settings");
+            props = DefaultProperties.get();
+            props.save("oldrsclient.properties");
+            Updater upd = new Updater();
+            upd.update();
+        }
 
         Section launcherSection = props.getSection("launcher");
 
@@ -64,8 +75,6 @@ public class Launcher {
                 if(classLoader != null)
                     classLoader.close();
                 System.err.println("Unable to load applet!");
-                Updater upd = new Updater();
-                upd.update();
             }
         }
 
