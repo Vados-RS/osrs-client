@@ -47,6 +47,17 @@
                     <include>*.txt</include>
                 </includes>
             </resource>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/ruby/core</directory>
+                <targetPath>ruby</targetPath>
+                <includes>
+                    <include>*.rb</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
         </resources>
         <plugins>
             <plugin>

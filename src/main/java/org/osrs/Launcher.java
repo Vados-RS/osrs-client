@@ -11,15 +11,17 @@ import java.applet.Applet;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.logging.Logger;
 
 /**
  * osrs-client
  * 15.3.2013
  */
 public class Launcher {
+
+    private static final Logger log = Logger.getLogger(Launcher.class.getSimpleName());
 
     private static Properties props;
     private static URLClassLoader classLoader;
@@ -30,15 +32,15 @@ public class Launcher {
         props = new Properties();
         try {
             props.load("oldrsclient.properties");
-        } catch(FileNotFoundException ex) {
-            System.err.println("LAUNCHER> Properties file not found! Generating one with default settings");
+        } catch (FileNotFoundException ex) {
+            log.warning("Properties file not found! Generating one with default settings");
             props = DefaultProperties.get();
             props.save("oldrsclient.properties");
             Updater.update();
             props.reload();
         }
 
-        PluginManager.getInstance().loadScripts();
+        PluginManager.getInstance().reloadScripts();
         EventManager.getInstance().trigger("init");
 
         Section lsec = props.getSection("launcher");
@@ -46,18 +48,18 @@ public class Launcher {
 
         boolean alreadyUpdated = false;
         Applet applet = null;
-        while(applet == null) {
+        while (applet == null) {
             try {
-                if(!new File("gamepack.jar").exists())
+                if (!new File("gamepack.jar").exists())
                     throw new IOException();
                 applet = loadGame(new ClientStub(props.getSection("applet").getEntries(), baseURL, baseURL));
                 EventManager.getInstance().trigger("rs_init");
-            } catch(IOException ex) {
-                if(alreadyUpdated) {
-                    throw new Exception("Unable to load game after update!");
+            } catch (IOException ex) {
+                if (alreadyUpdated) {
+                    throw new Exception("Unable to load game after update! Wait patiently for an update by the developers.");
                 }
                 alreadyUpdated = true;
-                System.err.println("LAUNCHER> Unable to load game!");
+                log.warning("LAUNCHER> Unable to load game, retrying...");
                 Updater.update();
                 props.reload();
                 lsec = props.getSection("launcher");
@@ -91,7 +93,7 @@ public class Launcher {
     private static Applet loadGame(AbstractAppletStub stub) throws IOException {
         classLoader = null;
         try {
-            classLoader = new URLClassLoader(new URL[] {
+            classLoader = new URLClassLoader(new URL[]{
                     new File("gamepack.jar").toURI().toURL()
             });
             Class<?> client = classLoader.loadClass("client");
@@ -100,9 +102,9 @@ public class Launcher {
             applet.init();
             applet.start();
             return applet;
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
-            if(classLoader != null)
+            if (classLoader != null)
                 classLoader.close();
             throw new IOException("Error when loading game");
         }

@@ -11,6 +11,7 @@ public class Trigger {
     private String trigger, owner;
     private RubyProc block;
     private Object[] args;
+    private boolean threaded = false;
 
     public Trigger(String trigger, String owner, RubyProc block) {
         this.trigger = trigger;
@@ -20,6 +21,14 @@ public class Trigger {
 
     public Object[] getArgs() {
         return args;
+    }
+
+    public boolean isThreaded() {
+        return threaded;
+    }
+
+    public void setThreaded(boolean threaded) {
+        this.threaded = threaded;
     }
 
     public void setArgs(Object[] args) {

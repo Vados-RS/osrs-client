@@ -1,5 +1,6 @@
 package org.osrs.event;
 
+import org.jruby.RubyBoolean;
 import org.jruby.RubyProc;
 import org.jruby.RubyString;
 import org.jruby.RubySymbol;
@@ -30,8 +31,12 @@ public class EventManager {
         this.triggers = new ArrayList<Trigger>();
     }
 
-    public void register(RubyString id, RubySymbol trigger, RubyProc proc) {
-        triggers.add(new Trigger(trigger.asJavaString(), id.asJavaString(), proc));
+    public void register(RubyString id, RubySymbol trigger, RubyBoolean threaded, RubyProc proc) {
+        Trigger t = new Trigger(trigger.asJavaString(), id.asJavaString(), proc);
+        if (threaded.isFalse()) {
+            t.setThreaded(false);
+        }
+        triggers.add(t);
     }
 
     public void trigger(String trigger, Object... args) {

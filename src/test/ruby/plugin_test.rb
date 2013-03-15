@@ -1,6 +1,6 @@
 require 'ruby_plugin'
 
-configuration do | c|
+configuration do |c|
   c.name = "Test Plugin"
   c.description = "A simple test plugin."
   c.author = "Speljohan"
@@ -16,7 +16,7 @@ on :rs_init do
   puts "RS Initialized!"
 end
 
-on :data_test do | args|
+on :data_test do |args|
   puts "Passed value #{args}"
 end
 

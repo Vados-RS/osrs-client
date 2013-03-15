@@ -70,12 +70,11 @@ public class Updater {
 
         String baseUrl = props.getSection("launcher").getProperty("base_url");
         boolean dled = false;
-        if((new File("gamepack.jar")).length() != getFileLength(new URL(baseUrl + "/gamepack.jar"))) {
+        if ((new File("gamepack.jar")).length() != getFileLength(new URL(baseUrl + "/gamepack.jar"))) {
             System.out.println("UPDATER> Downloading gamepack");
             downloadFile(new URL(props.getSection("launcher").getProperty("base_url") + "/gamepack.jar"), "gamepack.jar.temp");
             dled = true;
-        }
-        else
+        } else
             System.out.println("UPDATER> Skipping download");
         List<String> classes = new ArrayList<String>();
         JarFile jar = new JarFile(dled ? "gamepack.jar.temp" : "gamepack.jar");
@@ -149,7 +148,7 @@ public class Updater {
         ParamParser p = new ParamParser("oldrsclient.properties");
         p.parseAndSave();
 
-        if(dled && !new File("gamepack.jar.temp").renameTo(new File("gamepack.jar"))) {
+        if (dled && !new File("gamepack.jar.temp").renameTo(new File("gamepack.jar"))) {
             throw new IOException("Unable to rename tempfile!");
         }
 

@@ -7,7 +7,11 @@ import org.jruby.embed.ScriptingContainer;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * User: Johan
@@ -15,6 +19,9 @@ import java.util.*;
  * Time: 10:44
  */
 public class PluginManager {
+
+    private static final Logger log = Logger.getLogger(PluginManager.class.getSimpleName());
+
     private static PluginManager ourInstance = new PluginManager();
 
     public ScriptingContainer container;
@@ -26,7 +33,7 @@ public class PluginManager {
 
     public void register(PluginDescriptor pluginDescriptor) {
         plugins.put(pluginDescriptor.getName(), pluginDescriptor);
-        System.out.println("PLUGINS> Plugin '" + pluginDescriptor.getName() + "' Registered.");
+        log.info("Plugin '" + pluginDescriptor.getName() + "' Registered.");
     }
 
     public void unregister(PluginDescriptor pluginDescriptor) {
@@ -44,17 +51,25 @@ public class PluginManager {
                 return name.endsWith(".rb");
             }
         });
-        for(int i = 0; files != null && i < files.length; i++) {
+        for (int i = 0; files != null && i < files.length; i++) {
             container.runScriptlet(PathType.ABSOLUTE, files[i].getAbsolutePath());
         }
     }
 
-    private PluginManager() {
-        container = new ScriptingContainer(LocalContextScope.CONCURRENT);
-        container.setCompatVersion(CompatVersion.RUBY2_0);
-        List<String> loadPaths = new ArrayList();
-        loadPaths.add("./scripts");
-        container.setLoadPaths(loadPaths);
+    public void reloadScripts() {
+        container.terminate();
+        container.setLoadPaths(Arrays.asList("ruby"));
         plugins = new HashMap<String, PluginDescriptor>();
+        loadBootstrap();
+        loadScripts();
+    }
+
+    public void loadBootstrap() {
+        container.runScriptlet(PathType.CLASSPATH, "ruby/sven_bootstrap.rb");
+    }
+
+    private PluginManager() {
+        container = new ScriptingContainer(LocalContextScope.SINGLETON);
+        container.setCompatVersion(CompatVersion.RUBY2_0);
     }
 }

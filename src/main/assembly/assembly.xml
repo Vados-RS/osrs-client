@@ -23,7 +23,7 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.basedir}/src/main/ruby</directory>
+            <directory>${project.basedir}/src/main/ruby/scripts</directory>
             <outputDirectory>/scripts</outputDirectory>
             <includes>
                 <include>*.rb</include>
