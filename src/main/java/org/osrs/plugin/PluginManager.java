@@ -26,7 +26,7 @@ public class PluginManager {
 
     public void register(PluginDescriptor pluginDescriptor) {
         plugins.put(pluginDescriptor.getName(), pluginDescriptor);
-        System.out.println("Plugin '" + pluginDescriptor.getName() + "' Registered.");
+        System.out.println("PLUGINS> Plugin '" + pluginDescriptor.getName() + "' Registered.");
     }
 
     public void unregister(PluginDescriptor pluginDescriptor) {
@@ -39,12 +39,13 @@ public class PluginManager {
 
     public void loadScripts() {
         File root = new File("./scripts");
-        for (File f : root.listFiles(new FilenameFilter() {
+        File files[] = root.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return name.endsWith(".rb");
             }
-        })) {
-            container.runScriptlet(PathType.ABSOLUTE, f.getAbsolutePath());
+        });
+        for(int i = 0; files != null && i < files.length; i++) {
+            container.runScriptlet(PathType.ABSOLUTE, files[i].getAbsolutePath());
         }
     }
 

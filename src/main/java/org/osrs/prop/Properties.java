@@ -84,6 +84,7 @@ public class Properties {
      * @throws IOException
      */
     public void save(String filename) throws IOException {
+        this.filename = filename;
         PrintWriter out = new PrintWriter(new FileWriter(filename));
         for (Map.Entry<String, Section> sectionEntry : sections.entrySet()) {
             String sectionName = sectionEntry.getKey();

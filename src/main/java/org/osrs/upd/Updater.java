@@ -43,11 +43,17 @@ import java.util.jar.JarFile;
  */
 public class Updater {
 
-    private String playersName = null, localPlayerName = null, playerClassName = null, entityClassName = null, entityXYName[] = new String[2], areaXYName[] = new String[2], chatMessageTypes = null, chatMessageSenders = null, chatMessages = null, playerName = null;
-    private ObjectType playersType = null, localPlayerType = null, entityXYType[] = new ObjectType[2], areaXYType[] = new ObjectType[2];
-    private int entityXYMultiplier[] = new int[2], areaXYMultiplier[] = new int[2];
+    private static String playersName = null, localPlayerName = null, playerClassName = null, entityClassName = null, entityXYName[] = new String[2], areaXYName[] = new String[2], chatMessageTypes = null, chatMessageSenders = null, chatMessages = null, playerName = null;
+    private static ObjectType playersType = null, localPlayerType = null, entityXYType[] = new ObjectType[2], areaXYType[] = new ObjectType[2];
+    private static int entityXYMultiplier[] = new int[2], areaXYMultiplier[] = new int[2];
 
-    private void downloadFile(URL url, String outFilename) throws IOException {
+    private static long getFileLength(URL url) throws IOException {
+        HttpClient client = new DefaultHttpClient();
+        HttpResponse response = client.execute(new HttpHost(url.getHost()), new BasicHttpRequest("HEAD", url.getFile()));
+        return Long.parseLong(response.getLastHeader("Content-length").getValue());
+    }
+
+    private static void downloadFile(URL url, String outFilename) throws IOException {
         HttpClient client = new DefaultHttpClient();
         HttpResponse response = client.execute(new HttpHost(url.getHost()), new BasicHttpRequest("HEAD", url.getFile()));
         long filesize = Long.parseLong(response.getLastHeader("Content-length").getValue());
@@ -58,14 +64,21 @@ public class Updater {
         out.close();
     }
 
-    public void update() throws URISyntaxException, IOException {
+    public static void update() throws URISyntaxException, IOException {
         Properties props = new Properties();
         props.load("oldrsclient.properties");
 
-        System.out.println("Downloading gamepack");
-        downloadFile(new URL(props.getSection("launcher").getProperty("base_url") + "/gamepack.jar"), "gamepack.jar.temp");
+        String baseUrl = props.getSection("launcher").getProperty("base_url");
+        boolean dled = false;
+        if((new File("gamepack.jar")).length() != getFileLength(new URL(baseUrl + "/gamepack.jar"))) {
+            System.out.println("UPDATER> Downloading gamepack");
+            downloadFile(new URL(props.getSection("launcher").getProperty("base_url") + "/gamepack.jar"), "gamepack.jar.temp");
+            dled = true;
+        }
+        else
+            System.out.println("UPDATER> Skipping download");
         List<String> classes = new ArrayList<String>();
-        JarFile jar = new JarFile("gamepack.jar.temp");
+        JarFile jar = new JarFile(dled ? "gamepack.jar.temp" : "gamepack.jar");
         Enumeration<JarEntry> entries = jar.entries();
         while (entries.hasMoreElements()) {
             JarEntry next = entries.nextElement();
@@ -73,7 +86,7 @@ public class Updater {
                 classes.add(next.getName());
         }
         jar.close();
-        System.out.println("Searching for field references");
+        System.out.println("UPDATER> Searching for field references");
         for (String s : classes) {// IT'S BECAUSE WE NEED THESE VALUES BEFORE GOING TO THE NEXT MAGICAL PART
             try {
                 ClassGen cg = new ClassGen(new ClassParser(jar.getName(), s).parse());
@@ -128,7 +141,7 @@ public class Updater {
         cs.putProperty("chat_message_types", chatMessageTypes);
         cs.putProperty("chat_message_senders", chatMessageSenders);
 
-        System.out.println("Saving");
+        System.out.println("UPDATER> Saving");
 
         props.putSection(cs, true);
         props.save("oldrsclient.properties");
@@ -136,12 +149,14 @@ public class Updater {
         ParamParser p = new ParamParser("oldrsclient.properties");
         p.parseAndSave();
 
-        new File("gamepack.jar.temp").renameTo(new File("gamepack.jar"));
+        if(dled && !new File("gamepack.jar.temp").renameTo(new File("gamepack.jar"))) {
+            throw new IOException("Unable to rename tempfile!");
+        }
 
-        System.out.println("Done");
+        System.out.println("UPDATER> Done");
     }
 
-    private void find(ClassGen cg) {
+    private static void find(ClassGen cg) {
         if (cg.getClassName().equals(playerClassName)) {
             for (Field f : cg.getFields()) {
                 FieldGen fg = new FieldGen(f, cg.getConstantPool());

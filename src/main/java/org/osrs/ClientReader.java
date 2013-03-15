@@ -235,7 +235,7 @@ public class ClientReader implements Runnable {
                         jsonMessages.add(jsonMessage);
                     }
                     jsonData.put("data", jsonMessages);
-                    System.out.println("pushing " + jsonData.toJSONString());
+                    //System.out.println("CLIENTREADER> pushing " + jsonData.toJSONString());
                     HttpClient httpClient = new DefaultHttpClient();
                     HttpPost post = new HttpPost(apiHost + apiURI);
                     post.setEntity(new UrlEncodedFormEntity(constructParameters(apiKey, URLEncoder.encode(jsonData.toJSONString(), "UTF-8"))));

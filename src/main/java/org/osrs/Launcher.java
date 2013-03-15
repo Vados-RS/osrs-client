@@ -7,32 +7,73 @@ import org.osrs.prop.Properties;
 import org.osrs.prop.Section;
 import org.osrs.upd.Updater;
 
-import javax.swing.*;
 import java.applet.Applet;
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
 /**
- * oldrsclient
- * 4.3.2013
+ * osrs-client
+ * 15.3.2013
  */
 public class Launcher {
 
     private static Properties props;
-    private static ClientReader clientReader;
-    private static Thread clientThread;
     private static URLClassLoader classLoader;
-    private static Thread scriptThread;
+    private static ClientReader clientReader;
+    private static Thread clientThread, scriptThread;
 
-    public static void main(String args[]) throws Exception {// no exceptio nhandling 4 u
+    public static void main(String args[]) throws Exception {// still no exception handling 4u
+        props = new Properties();
+        try {
+            props.load("oldrsclient.properties");
+        } catch(FileNotFoundException ex) {
+            System.err.println("LAUNCHER> Properties file not found! Generating one with default settings");
+            props = DefaultProperties.get();
+            props.save("oldrsclient.properties");
+            Updater.update();
+            props.reload();
+        }
+
         PluginManager.getInstance().loadScripts();
+        EventManager.getInstance().trigger("init");
+
+        Section lsec = props.getSection("launcher");
+        URL baseURL = new URL(lsec.getProperty("base_url"));
+
+        boolean alreadyUpdated = false;
+        Applet applet = null;
+        while(applet == null) {
+            try {
+                if(!new File("gamepack.jar").exists())
+                    throw new IOException();
+                applet = loadGame(new ClientStub(props.getSection("applet").getEntries(), baseURL, baseURL));
+                EventManager.getInstance().trigger("rs_init");
+            } catch(IOException ex) {
+                if(alreadyUpdated) {
+                    throw new Exception("Unable to load game after update!");
+                }
+                alreadyUpdated = true;
+                System.err.println("LAUNCHER> Unable to load game!");
+                Updater.update();
+                props.reload();
+                lsec = props.getSection("launcher");
+                baseURL = new URL(lsec.getProperty("base_url"));
+            }
+        }
+
+        Frame f = new Frame("Old School RuneScape Game");
+        f.init();
+        f.add(applet);
+        f.showFrame();
+
+        clientReader = new ClientReader(applet);
+        clientThread = new Thread(clientReader);
         scriptThread = new Thread(new Runnable() {
+
             @Override
             public void run() {
                 while (true) {
@@ -45,79 +86,26 @@ public class Launcher {
                 }
             }
         });
-        scriptThread.start();
-        EventManager.getInstance().trigger("init");
-        props = new Properties();
-
-        try {
-            props.load("oldrsclient.properties");
-        } catch (FileNotFoundException ex) {
-            System.err.println("Properties file not found! Generating default settings");
-            props = DefaultProperties.get();
-            props.save("oldrsclient.properties");
-            Updater upd = new Updater();
-            upd.update();
-        }
-
-        Section launcherSection = props.getSection("launcher");
-
-        URL baseURL = new URL(launcherSection.getProperty("base_url"));
-
-        Launcher launcher = new Launcher();
-
-        Applet applet = null;
-        while (applet == null) {
-            try {
-                if (!new File("gamepack.jar").exists())
-                    throw new Exception("");
-                applet = launcher.loadGame(new ClientStub(props.getSection("applet").getEntries(), baseURL, baseURL));
-            } catch (Exception ex) {
-                if (classLoader != null)
-                    classLoader.close();
-                System.err.println("Unable to load applet!");
-                Updater upd = new Updater();
-                upd.update();
-            }
-        }
-
-        clientReader = new ClientReader(applet);
-        clientThread = new Thread(clientReader);
-        clientThread.start();
-
-        JFrame frame = new JFrame("Old School RuneScape Client");
-
-        Container frameContainer = frame.getContentPane();
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.fill = GridBagConstraints.CENTER;
-        gridBagLayout.setConstraints(frameContainer, gridBagConstraints);
-        frameContainer.setLayout(gridBagLayout);
-
-        frameContainer.add(applet);
-        frameContainer.setBackground(Color.black);
-        frame.setContentPane(frameContainer);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                EventManager.getInstance().trigger("terminate");
-                System.exit(0);
-            }
-        });
-        EventManager.getInstance().trigger("rs_init");
     }
 
-    public Applet loadGame(AbstractAppletStub appletStub)
-            throws MalformedURLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-        classLoader = new URLClassLoader(new URL[]{new File("gamepack.jar").toURI().toURL()});
-        Class<?> appletClass = classLoader.loadClass("client");
-        Applet applet = (Applet) appletClass.newInstance();
-        applet.setStub(appletStub);
-        applet.init();
-        applet.start();
-        return applet;
+    private static Applet loadGame(AbstractAppletStub stub) throws IOException {
+        classLoader = null;
+        try {
+            classLoader = new URLClassLoader(new URL[] {
+                    new File("gamepack.jar").toURI().toURL()
+            });
+            Class<?> client = classLoader.loadClass("client");
+            Applet applet = (Applet) client.newInstance();
+            applet.setStub(stub);
+            applet.init();
+            applet.start();
+            return applet;
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            if(classLoader != null)
+                classLoader.close();
+            throw new IOException("Error when loading game");
+        }
     }
 
     public static Properties getProps() {

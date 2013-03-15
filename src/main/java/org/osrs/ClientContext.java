@@ -39,24 +39,19 @@ public class ClientContext implements AppletContext {
 
     public void showDocument(URL url) {
         System.out.println("APPLET> ClientContext.showDocument(\"" + url + "\")");
-        Updater upd = new Updater();
-        try {
-            upd.update();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
+        if(url.getFile().indexOf("js5connect_outofdate") > 0) {
+            try {
+                System.err.println("LAUNCHER> Game has been updated!");
+                Updater.update();
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
         }
     }
 
     public void showDocument(URL url, String target) {
-        System.out.println("APPLET> ClientContext.showDocument(\"" + url + "\", \"" + target + "\")");
-        Updater upd = new Updater();
-        try {
-            upd.update();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
+        showDocument(url);
     }
 
     public void showStatus(String status) {
