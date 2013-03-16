@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.osrs.ui.PluginManagerForm">
+  <grid id="27dc6" binding="mainPanel" layout-manager="FormLayout">
+    <rowspec value="top:max(p;4px):grow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="bottom:max(p;4px):noGrow"/>
+    <colspec value="fill:p:grow"/>
+    <constraints>
+      <xy x="20" y="20" width="500" height="500"/>
+    </constraints>
+    <properties>
+      <minimumSize width="500" height="450"/>
+      <preferredSize width="500" height="450"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="a531d" binding="controlPanel" layout-manager="FormLayout">
+        <rowspec value="center:d:grow"/>
+        <colspec value="fill:d:grow"/>
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-vert="false"/>
+        </constraints>
+        <properties>
+          <focusTraversalPolicyProvider value="false"/>
+          <focusable value="false"/>
+          <minimumSize width="300" height="30"/>
+          <preferredSize width="300" height="30"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="52fc2" class="javax.swing.JButton" binding="buttonRefresh">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="Refresh"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <tabbedpane id="b2368" binding="tabPane">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="200"/>
+          </grid>
+          <forms defaultalign-vert="false"/>
+        </constraints>
+        <properties>
+          <minimumSize width="300" height="245"/>
+          <preferredSize width="300" height="245"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="f21cd" binding="tabPlugins" layout-manager="FormLayout">
+            <rowspec value="center:d:noGrow"/>
+            <colspec value="fill:d:noGrow"/>
+            <constraints>
+              <tabbedpane title="Plugins"/>
+            </constraints>
+            <properties>
+              <name value=""/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <scrollpane id="1a53f" binding="scrollPane">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <forms defaultalign-horz="false" defaultalign-vert="false"/>
+                </constraints>
+                <properties>
+                  <doubleBuffered value="true"/>
+                  <preferredSize width="500" height="500"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="5b8ab" class="javax.swing.JTable" binding="pluginTable">
+                    <constraints/>
+                    <properties>
+                      <autoCreateRowSorter value="true"/>
+                      <enabled value="false"/>
+                      <fillsViewportHeight value="true"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+          <grid id="32413" binding="tabDownloadPlugins" layout-manager="FormLayout">
+            <rowspec value="center:d:grow"/>
+            <colspec value="fill:d:grow"/>
+            <constraints>
+              <tabbedpane title="Download Plugins" enabled="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children/>
+          </grid>
+        </children>
+      </tabbedpane>
+    </children>
+  </grid>
+</form>

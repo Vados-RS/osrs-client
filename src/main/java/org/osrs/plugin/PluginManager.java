@@ -4,6 +4,7 @@ import org.jruby.CompatVersion;
 import org.jruby.embed.LocalContextScope;
 import org.jruby.embed.PathType;
 import org.jruby.embed.ScriptingContainer;
+import org.osrs.ui.PluginManagerForm;
 
 import java.io.File;
 import java.io.FilenameFilter;

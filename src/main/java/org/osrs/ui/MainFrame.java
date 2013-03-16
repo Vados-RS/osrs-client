@@ -1,6 +1,7 @@
-package org.osrs;
+package org.osrs.ui;
 
 import org.osrs.event.EventManager;
+import org.osrs.plugin.PluginManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,20 +14,23 @@ import java.awt.event.WindowEvent;
  * osrs-client
  * 15.3.2013
  */
-public class Frame extends JFrame {
+public class MainFrame extends JFrame {
 
     //private PanelBuilder builder;
     //private CellConstraints constraints;
     private Container container;
     private MenuBar menuBar;
 
-    public Frame(String title) {
+    private PluginManagerForm pluginManagerForm;
+
+    public MainFrame(String title) {
         super(title);
         //builder = new PanelBuilder(new FormLayout());
         //constraints = new CellConstraints();
     }
 
     public void init() {
+        pluginManagerForm = new PluginManagerForm();
         //setContentPane(builder.getContainer());
         container = getContentPane();
         GridBagLayout gridBagLayout = new GridBagLayout();
@@ -38,18 +42,52 @@ public class Frame extends JFrame {
         setContentPane(container);
 
         menuBar = new MenuBar();
-        Menu menu = new Menu("File");
-        MenuItem menuItem = new MenuItem("Exit");
-        menuItem.addActionListener(new ActionListener() {
+        buildMenu();
+        setMenuBar(menuBar);
+    }
+
+    public void buildMenu() {
+        Menu menuFile = new Menu("File");
+        MenuItem menuItemExit = new MenuItem("Exit");
+        menuItemExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EventManager.getInstance().trigger("terminate");
                 System.exit(0);
             }
         });
-        menu.add(menuItem);
-        menuBar.add(menu);
-        setMenuBar(menuBar);
+
+        menuFile.add(menuItemExit);
+
+        Menu menuPlugins = new Menu("Plugins");
+        MenuItem menuItemManage = new MenuItem("Manage");
+        MenuItem menuItemReload = new MenuItem("Reload");
+        menuItemManage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog frame = new JDialog();
+                frame.setContentPane(pluginManagerForm.getMainPanel());
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setTitle("Plugin Manager");
+                frame.setResizable(false);
+                frame.setAlwaysOnTop(true);
+                frame.pack();
+                frame.setVisible(true);
+            }
+        });
+        menuItemReload.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PluginManager.getInstance().reloadScripts();
+            }
+        });
+
+        menuPlugins.add(menuItemManage);
+        menuPlugins.add(menuItemReload);
+
+
+        menuBar.add(menuFile);
+        menuBar.add(menuPlugins);
     }
 
     public void showFrame() {

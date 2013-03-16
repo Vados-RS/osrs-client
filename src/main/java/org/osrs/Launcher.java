@@ -5,6 +5,7 @@ import org.osrs.plugin.PluginManager;
 import org.osrs.prop.DefaultProperties;
 import org.osrs.prop.Properties;
 import org.osrs.prop.Section;
+import org.osrs.ui.MainFrame;
 import org.osrs.upd.Updater;
 
 import java.applet.Applet;
@@ -67,7 +68,7 @@ public class Launcher {
             }
         }
 
-        Frame f = new Frame("Old School RuneScape Game");
+        MainFrame f = new MainFrame("Old School RuneScape Client");
         f.init();
         f.add(applet);
         f.showFrame();
