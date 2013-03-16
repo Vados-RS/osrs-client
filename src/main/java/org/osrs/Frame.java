@@ -18,7 +18,7 @@ public class Frame extends JFrame {
     //private PanelBuilder builder;
     //private CellConstraints constraints;
     private Container container;
-    private JMenuBar menuBar;
+    private MenuBar menuBar;
 
     public Frame(String title) {
         super(title);
@@ -37,9 +37,9 @@ public class Frame extends JFrame {
         container.setBackground(Color.black);
         setContentPane(container);
 
-        menuBar = new JMenuBar();
-        JMenu menu = new JMenu("File");
-        JMenuItem menuItem = new JMenuItem("Exit");
+        menuBar = new MenuBar();
+        Menu menu = new Menu("File");
+        MenuItem menuItem = new MenuItem("Exit");
         menuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -49,7 +49,7 @@ public class Frame extends JFrame {
         });
         menu.add(menuItem);
         menuBar.add(menu);
-        setJMenuBar(menuBar);
+        setMenuBar(menuBar);
     }
 
     public void showFrame() {
