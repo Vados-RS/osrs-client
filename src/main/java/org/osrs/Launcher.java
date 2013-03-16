@@ -1,5 +1,6 @@
 package org.osrs;
 
+import com.jgoodies.forms.layout.CellConstraints;
 import org.osrs.event.EventManager;
 import org.osrs.plugin.PluginManager;
 import org.osrs.prop.DefaultProperties;
@@ -10,6 +11,7 @@ import org.osrs.upd.Updater;
 
 import java.applet.Applet;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -30,6 +32,14 @@ public class Launcher {
     private static Thread clientThread, scriptThread;
 
     public static void main(String args[]) throws Exception {// still no exception handling 4u
+
+        try {
+            java.util.logging.LogManager.getLogManager().readConfiguration(
+                    new FileInputStream("logging.properties"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         props = new Properties();
         try {
             props.load("oldrsclient.properties");
@@ -70,8 +80,10 @@ public class Launcher {
 
         MainFrame f = new MainFrame("Old School RuneScape Client");
         f.init();
-        f.add(applet);
+        CellConstraints constraints = new CellConstraints(1, 1);
+        f.getMainForm().getAppletPanel().add(applet, constraints);
         f.showFrame();
+        log.info("Client initialized.");
 
         clientReader = new ClientReader(applet);
         clientThread = new Thread(clientReader);

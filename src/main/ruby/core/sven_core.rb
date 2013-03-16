@@ -34,7 +34,7 @@ end
 
 def view(ui, &block)
   view = View.define 0, &block
-  ui.add view, java.awt.BorderLayout::SOUTH
+  ui.addTab @config.name, view
 end
 
 def frame(&block)
@@ -44,4 +44,10 @@ end
 
 def message(msg)
   javax.swing.JOptionPane.show_message_dialog nil, msg
+end
+
+module Kernel
+  def puts (s)
+    org.osrs.util.TextAreaHandler.jTextArea.append "[#{@config.id}]: #{s}\n" rescue ""
+  end
 end

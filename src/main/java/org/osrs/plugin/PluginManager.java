@@ -1,9 +1,12 @@
 package org.osrs.plugin;
 
 import org.jruby.CompatVersion;
+import org.jruby.Ruby;
+import org.jruby.RubyHash;
 import org.jruby.embed.LocalContextScope;
 import org.jruby.embed.PathType;
 import org.jruby.embed.ScriptingContainer;
+import org.jruby.internal.runtime.GlobalVariables;
 import org.osrs.ui.PluginManagerForm;
 
 import java.io.File;

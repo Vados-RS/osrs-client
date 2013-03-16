@@ -9,24 +9,20 @@ on :init do
   puts "Hello!"
 end
 
-frame do
-  title "Hello There!"
-  size 300, 100
-  always_on_top true
-  label do
-    text "Hai Der!"
+on :swing_ui, :threaded => false do | ui|
+  view ui do
+    label do
+      text "Hai Der!"
+    end
+    checkbox do
+      text "Check me!"
+      selected false
+    end
+    button do
+      text "Click me!"
+      bind "wut"
+    end
   end
-
-  checkbox do
-    text "Check me!"
-    selected false
-  end
-
-  button do
-    text "Click me!"
-    bind "wut"
-  end
-
 end
 
 action :clicked, "wut" do

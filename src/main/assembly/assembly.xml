@@ -20,6 +20,7 @@
             <outputDirectory>/</outputDirectory>
             <includes>
                 <include>*.md</include>
+                <include>logging.properties</include>
             </includes>
         </fileSet>
         <fileSet>

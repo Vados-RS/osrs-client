@@ -45,7 +45,11 @@ public class EventManager {
                 if (args != null) {
                     t.setArgs(args);
                 }
-                queue.add(t);
+                if (!t.isThreaded()) {
+                    PluginManager.getInstance().container.callMethod(t.getBlock(), "call", t.getArgs());
+                } else {
+                    queue.add(t);
+                }
             }
         }
     }
