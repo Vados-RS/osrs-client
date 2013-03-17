@@ -14,7 +14,7 @@ on :swing_ui, :threaded => false do | ui|
     label do
       text "Hai Der!"
     end
-    $checkbox = checkbox do
+    checkbox "my_checkbox" do
       text "Check me!"
       selected false
     end
@@ -26,7 +26,8 @@ on :swing_ui, :threaded => false do | ui|
 end
 
 action :clicked, "wut" do
-  message "You clicked me, the checkbox is #{$checkbox.selected?}"
+  check = get "my_checkbox"
+  message "You clicked me, the checkbox is #{check.selected?}"
 end
 
 on :terminate do
