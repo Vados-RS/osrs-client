@@ -1,5 +1,7 @@
 package org.osrs.ui;
 
+import org.osrs.ui.components.DnDTabbedPane;
+
 import javax.swing.*;
 
 /**
@@ -17,5 +19,9 @@ public class PluginModuleForm {
 
     public JPanel getRootPanel() {
         return panel1;
+    }
+
+    public JTabbedPane getTabPane() {
+        return pluginPane;
     }
 }

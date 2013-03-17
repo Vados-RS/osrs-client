@@ -18,9 +18,6 @@ import java.io.ByteArrayInputStream;
  */
 public class MainFrame extends JFrame {
 
-    //private PanelBuilder builder;
-    //private CellConstraints constraints;
-    private Container container;
     private MenuBar menuBar;
 
     private MainForm mainForm;
@@ -31,7 +28,15 @@ public class MainFrame extends JFrame {
         super(title);
         mainForm = new MainForm();
         pluginManagerForm = new PluginManagerForm();
+
         pluginModule_south = new PluginModuleForm();
+        pluginModule_east = new PluginModuleForm();
+        pluginModule_west = new PluginModuleForm();
+        pluginModule_north = new PluginModuleForm();
+
+        pluginModule_north.getRootPanel().setPreferredSize(new Dimension(503, 200));
+        pluginModule_west.getRootPanel().setPreferredSize(new Dimension(200, 503));
+        pluginModule_east.getRootPanel().setPreferredSize(new Dimension(200, 503));
         pluginModule_south.getRootPanel().setPreferredSize(new Dimension(503, 200));
     }
 
@@ -44,10 +49,18 @@ public class MainFrame extends JFrame {
         LogModuleForm log = new LogModuleForm();
         pluginModule_south.addTab("Log", log.getRootPanel());
 
-        EventManager.getInstance().trigger("swing_ui", pluginModule_south);
-
         TextAreaHandler.setTextArea(log.getLogArea());
+
         mainForm.getSouthPanel().add(pluginModule_south.getRootPanel(), constraints);
+        mainForm.getWestPanel().add(pluginModule_west.getRootPanel(), constraints);
+        mainForm.getWestPanel().setVisible(false);
+        mainForm.getEastPanel().add(pluginModule_east.getRootPanel(), constraints);
+        mainForm.getEastPanel().setVisible(false);
+        mainForm.getNorthPanel().add(pluginModule_north.getRootPanel(), constraints);
+        mainForm.getNorthPanel().setVisible(false);
+
+        EventManager.getInstance().trigger("swing_ui", mainForm.getPreferredTab());
+
         add(mainForm.getRootPanel());
 
 
@@ -103,18 +116,42 @@ public class MainFrame extends JFrame {
         menuItemSouth = new CheckboxMenuItem("Show South Module", true);
         menuItemEast = new CheckboxMenuItem("Show East Module", false);
 
+        menuItemNorth.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                mainForm.getNorthPanel().setVisible(e.getStateChange() == ItemEvent.SELECTED);
+                pack();
+            }
+        });
+
+        menuItemWest.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                mainForm.getWestPanel().setVisible(e.getStateChange() == ItemEvent.SELECTED);
+                pack();
+            }
+        });
+
         menuItemSouth.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 mainForm.getSouthPanel().setVisible(e.getStateChange() == ItemEvent.SELECTED);
-                setSize(new Dimension(785, (e.getStateChange() == ItemEvent.SELECTED) ? getSize().height + 200 : getSize().height - 200));
+                pack();
             }
         });
 
-        //menuView.add(menuItemNorth);
-        //menuView.add(menuItemWest);
+        menuItemEast.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                mainForm.getEastPanel().setVisible(e.getStateChange() == ItemEvent.SELECTED);
+                pack();
+            }
+        });
+
+        menuView.add(menuItemNorth);
+        menuView.add(menuItemWest);
         menuView.add(menuItemSouth);
-        //menuView.add(menuItemEast);
+        menuView.add(menuItemEast);
 
         menuBar.add(menuFile);
         menuBar.add(menuPlugins);

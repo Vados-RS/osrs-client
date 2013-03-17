@@ -38,4 +38,24 @@ public class MainForm {
     public JPanel getNorthPanel() {
         return northPanel;
     }
+
+    public JTabbedPane getPreferredTab() {
+        JPanel[] panels = new JPanel[] {southPanel, eastPanel, northPanel, westPanel};
+
+        for (int i = 0; i < panels.length; i++) {
+            JTabbedPane m = ((JTabbedPane)((JPanel) panels[i].getComponent(0)).getComponent(0));
+            boolean horizontal = (i == 0 || i == 2);
+            int maxTabs;
+            if (horizontal) {
+                maxTabs = 8;
+            } else {
+                maxTabs = 3;
+            }
+            if (m.getTabCount() >= maxTabs)
+                continue;
+
+            return m;
+        }
+        return ((JTabbedPane)((JPanel) southPanel.getComponent(0)).getComponent(0));
+    }
 }

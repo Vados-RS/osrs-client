@@ -9,6 +9,7 @@ import org.osrs.prop.Section;
 import org.osrs.ui.MainFrame;
 import org.osrs.upd.Updater;
 
+import javax.swing.*;
 import java.applet.Applet;
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,6 +52,8 @@ public class Launcher {
             props.reload();
         }
 
+        setupLAF();
+
         PluginManager.getInstance().reloadScripts();
         EventManager.getInstance().trigger("init");
 
@@ -82,6 +85,7 @@ public class Launcher {
         f.init();
         CellConstraints constraints = new CellConstraints(1, 1);
         f.getMainForm().getAppletPanel().add(applet, constraints);
+        f.setResizable(false);
         f.showFrame();
         log.info("Client initialized.");
 
@@ -130,4 +134,28 @@ public class Launcher {
     public static URLClassLoader getClassLoader() {
         return classLoader;
     }
+
+    private static void setupLAF() {
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if (info.getName().equals("Nimbus")) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            setupDefaultLAF();
+        }
+    }
+
+    private static void setupDefaultLAF() {
+        try {
+            UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+    }
+
 }
