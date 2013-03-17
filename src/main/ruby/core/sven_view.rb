@@ -6,27 +6,30 @@ module View
 
   module Components
 
-    def label(&block)
+    def label(id = "", &block)
       generate_rscript_helpers javax.swing.JLabel #Temporary
       c = javax.swing.JLabel.new
       c.instance_eval &block
       add c
+      c.store id unless id == ""
       c
     end
 
-    def button(&block)
+    def button(id = "", &block)
       generate_rscript_helpers javax.swing.JButton #Temporary
       c = javax.swing.JButton.new
       c.instance_eval &block
       add c
+      c.store id unless id == ""
       c
     end
 
-    def checkbox(&block)
+    def checkbox(id = "", &block)
       generate_rscript_helpers javax.swing.JCheckBox #Temporary
       c = javax.swing.JCheckBox.new
       c.instance_eval &block
       add c
+      c.store id unless id == ""
       c
     end
 
@@ -54,6 +57,10 @@ module View
       cls.class_eval {
         def print(*args)
           Kernel.print *args # To avoid 'cannot convert instance of class org.jruby.RubyString to class java.awt.Graphics (TypeError)'
+        end
+
+        def store(name)
+          $variables["#{name}"] = self # TODO: Store uniquely
         end
       }
     end

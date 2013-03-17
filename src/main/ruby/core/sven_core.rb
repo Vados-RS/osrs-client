@@ -12,7 +12,7 @@ java_import 'org.osrs.plugin.PluginManager'
 java_import 'org.osrs.plugin.PluginDescriptor'
 
 # Core
-
+$variables = {}
 LISTENERS = {}
 
 def configuration(&block)
@@ -42,6 +42,10 @@ def frame(&block)
   view = View.define 1, &block
   view.setVisible true
   view
+end
+
+def get(name)
+  $variables["#{name}"] # TODO: Store uniquely
 end
 
 def message(msg)
