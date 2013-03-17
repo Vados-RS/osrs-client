@@ -35,17 +35,18 @@ end
 def view(ui, &block)
   view = View.define 0, &block
   ui.addTab @config.name, view
+  view
 end
 
 def frame(&block)
   view = View.define 1, &block
   view.setVisible true
+  view
 end
 
 def message(msg)
   javax.swing.JOptionPane.show_message_dialog nil, msg
 end
-
 module Kernel
   def puts (s)
     org.osrs.util.TextAreaHandler.jTextArea.append "[#{@config.id}]: #{s}\n" rescue ""

@@ -6,7 +6,7 @@ configuration do
 end
 
 on :init do
-  puts "Hello!"
+  puts "Ohai!"
 end
 
 on :swing_ui, :threaded => false do | ui|
@@ -14,7 +14,7 @@ on :swing_ui, :threaded => false do | ui|
     label do
       text "Hai Der!"
     end
-    checkbox do
+    $checkbox = checkbox do
       text "Check me!"
       selected false
     end
@@ -26,7 +26,7 @@ on :swing_ui, :threaded => false do | ui|
 end
 
 action :clicked, "wut" do
-  message "You clicked me!"
+  message "You clicked me, the checkbox is #{$checkbox.selected?}"
 end
 
 on :terminate do

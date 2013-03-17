@@ -42,8 +42,17 @@ public class MainForm {
     public JTabbedPane getPreferredTab() {
         JPanel[] panels = new JPanel[] {southPanel, eastPanel, northPanel, westPanel};
 
+        int lastTabCount = 9000;
+        JTabbedPane lowCount = null;
+
         for (int i = 0; i < panels.length; i++) {
             JTabbedPane m = ((JTabbedPane)((JPanel) panels[i].getComponent(0)).getComponent(0));
+
+            if (m.getTabCount() < lastTabCount) {
+                lastTabCount = m.getTabCount();
+                lowCount = m;
+            }
+
             boolean horizontal = (i == 0 || i == 2);
             int maxTabs;
             if (horizontal) {
@@ -56,6 +65,6 @@ public class MainForm {
 
             return m;
         }
-        return ((JTabbedPane)((JPanel) southPanel.getComponent(0)).getComponent(0));
+        return ((JTabbedPane)((JPanel) lowCount.getComponent(0)).getComponent(0));
     }
 }

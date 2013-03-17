@@ -11,6 +11,7 @@ module View
       c = javax.swing.JLabel.new
       c.instance_eval &block
       add c
+      c
     end
 
     def button(&block)
@@ -18,6 +19,7 @@ module View
       c = javax.swing.JButton.new
       c.instance_eval &block
       add c
+      c
     end
 
     def checkbox(&block)
@@ -25,6 +27,7 @@ module View
       c = javax.swing.JCheckBox.new
       c.instance_eval &block
       add c
+      c
     end
 
     def generate_setter_aliases(cls)
@@ -38,13 +41,21 @@ module View
     end
 
     def generate_getter_aliases(cls)
-      setters = {}
+      getters = {}
       cls.instance_methods.each do |m|
-        if m.match /\bget[A-Z][a-z]*/
-          setters[m] = m.to_s.underscore.gsub("get_", "").concat("?")
+        if m.match /\bget[A-Z][a-z]*/ or m.match /\bis[A-Z][a-z]*/
+          getters[m] = m.to_s.underscore.gsub("get_", "").concat("?")
         end
       end
-      cls.class_eval { setters.each_pair { |k, v| alias_method v.to_sym, k.to_sym } }
+      cls.class_eval { getters.each_pair { |k, v| alias_method v.to_sym, k.to_sym } }
+    end
+
+    def generate_dsl_methods(cls)
+      cls.class_eval {
+        def print(*args)
+          Kernel.print *args # To avoid 'cannot convert instance of class org.jruby.RubyString to class java.awt.Graphics (TypeError)'
+        end
+      }
     end
 
     def generate_action_methods(cls)
@@ -63,7 +74,8 @@ module View
     end
 
     def generate_rscript_helpers(cls)
-      #generate_getter_aliases cls
+      generate_dsl_methods cls
+      generate_getter_aliases cls
       generate_setter_aliases cls
       generate_action_methods cls
     end
