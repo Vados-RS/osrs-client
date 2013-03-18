@@ -1,6 +1,6 @@
 package org.osrs;
 
-import org.osrs.upd.Updater;
+import org.osrs.rs.upd.FieldIdentifier;
 
 import java.applet.Applet;
 import java.applet.AppletContext;
@@ -42,7 +42,7 @@ public class ClientContext implements AppletContext {
         if (url.getFile().indexOf("js5connect_outofdate") > 0) {
             try {
                 System.err.println("LAUNCHER> Game has been updated!");
-                Updater.update();
+                FieldIdentifier.update();
             } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(1);

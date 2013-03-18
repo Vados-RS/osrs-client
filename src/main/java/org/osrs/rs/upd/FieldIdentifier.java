@@ -1,4 +1,4 @@
-package org.osrs.upd;
+package org.osrs.rs.upd;
 
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.Field;
@@ -41,7 +41,7 @@ import java.util.jar.JarFile;
  * oldrsclient
  * 10.3.2013
  */
-public class Updater {
+public class FieldIdentifier {
 
     private static String playersName = null, localPlayerName = null, playerClassName = null, entityClassName = null, entityXYName[] = new String[2], areaXYName[] = new String[2], chatMessageTypes = null, chatMessageSenders = null, chatMessages = null, playerName = null;
     private static ObjectType playersType = null, localPlayerType = null, entityXYType[] = new ObjectType[2], areaXYType[] = new ObjectType[2];

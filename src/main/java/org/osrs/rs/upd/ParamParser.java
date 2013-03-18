@@ -1,4 +1,4 @@
-package org.osrs.upd;
+package org.osrs.rs.upd;
 
 import org.osrs.prop.Properties;
 import org.osrs.prop.Section;

@@ -6,8 +6,8 @@ import org.osrs.plugin.PluginManager;
 import org.osrs.prop.DefaultProperties;
 import org.osrs.prop.Properties;
 import org.osrs.prop.Section;
+import org.osrs.rs.upd.FieldIdentifier;
 import org.osrs.ui.MainFrame;
-import org.osrs.upd.Updater;
 
 import javax.swing.*;
 import java.applet.Applet;
@@ -48,7 +48,7 @@ public class Launcher {
             log.warning("Properties file not found! Generating one with default settings");
             props = DefaultProperties.get();
             props.save("oldrsclient.properties");
-            Updater.update();
+            FieldIdentifier.update();
             props.reload();
         }
 
@@ -74,7 +74,7 @@ public class Launcher {
                 }
                 alreadyUpdated = true;
                 log.warning("LAUNCHER> Unable to load game, retrying...");
-                Updater.update();
+                FieldIdentifier.update();
                 props.reload();
                 lsec = props.getSection("launcher");
                 baseURL = new URL(lsec.getProperty("base_url"));
