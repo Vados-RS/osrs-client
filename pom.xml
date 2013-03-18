@@ -101,10 +101,10 @@
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>org.osrs.Launcher</mainClass>
-                            <manifestEntries>
-                                <Build-Number>${build.number}</Build-Number>
-                            </manifestEntries>
                         </manifest>
+                        <manifestEntries>
+                            <Build-Number>${build.number}</Build-Number>
+                        </manifestEntries>
                     </archive>
                     <excludes>
                         <exclude>README.md</exclude>
