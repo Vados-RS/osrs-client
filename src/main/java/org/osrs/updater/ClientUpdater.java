@@ -6,9 +6,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.Attributes;
@@ -37,24 +35,20 @@ public class ClientUpdater {
         return latestVersion > internalVersion;
     }
 
-
-
     private int getLatestVersion() {
         HttpClient client = new DefaultHttpClient();
-        HttpGet get = new HttpGet("0.0.0.0/version.txt");
+        HttpGet get = new HttpGet("http://72.44.88.164/osrs/version.txt");
 
         try {
             HttpResponse response = client.execute(get);
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 throw new Exception();
             }
-            // TODO: Continue here.
+            return Integer.parseInt(new BufferedReader(new InputStreamReader(response.getEntity().getContent())).readLine());
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
         }
-        return -1;
-
     }
 
     public boolean hasLocalUpdate() {
@@ -64,6 +58,7 @@ public class ClientUpdater {
     public void applyLocalUpdate() {
         File f = new File("./update.tmp");
         f.renameTo(new File("./osrs.jar"));
+        System.exit(0);
     }
 
     private int getCurrentVersion() {
@@ -84,12 +79,18 @@ public class ClientUpdater {
                     }
                 }
                 catch (Exception e) {
-                    // Silently ignore wrong manifests on classpath?
+                    e.printStackTrace();
                 }
             }
         } catch (IOException e1) {
-            // Silently ignore wrong manifests on classpath?
+            e1.printStackTrace();
         }
         return -1;
     }
+
+    public static void main(String[] args) {
+        System.out.println("Current: " + ClientUpdater.getInstance().getCurrentVersion());
+        System.out.println("Latest: " + ClientUpdater.getInstance().getLatestVersion());
+    }
+
 }
