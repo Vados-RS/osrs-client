@@ -2,9 +2,9 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.osrs.ui.UpdaterForm">
   <grid id="27dc6" binding="rootPanel" layout-manager="FormLayout">
     <rowspec value="fill:max(p;4px):grow"/>
-    <colspec value="fill:d:grow"/>
+    <colspec value="left:d:grow"/>
     <colspec value="left:4dlu:noGrow"/>
-    <colspec value="fill:p:grow"/>
+    <colspec value="right:p:grow"/>
     <constraints>
       <xy x="20" y="20" width="500" height="400"/>
     </constraints>

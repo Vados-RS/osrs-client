@@ -8,6 +8,8 @@ import org.osrs.prop.Properties;
 import org.osrs.prop.Section;
 import org.osrs.rs.upd.FieldIdentifier;
 import org.osrs.ui.MainFrame;
+import org.osrs.ui.UpdaterForm;
+import org.osrs.updater.ClientUpdater;
 
 import javax.swing.*;
 import java.applet.Applet;
@@ -33,7 +35,21 @@ public class Launcher {
     private static Thread clientThread, scriptThread;
 
     public static void main(String args[]) throws Exception {// still no exception handling 4u
+        if (ClientUpdater.getInstance().hasUpdate()) {
+            int result = JOptionPane.showConfirmDialog(null, "There is a new update available! Update now?", "Updater", JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                UpdaterForm form = new UpdaterForm();
+                form.start();
+            } else {
+                new Launcher();
+            }
+        } else {
+            new Launcher();
+        }
+    }
 
+    public Launcher() throws Exception {
+        System.out.println("I SHOULDNT EVEN GET HERE WTF");
         try {
             java.util.logging.LogManager.getLogManager().readConfiguration(
                     new FileInputStream("logging.properties"));

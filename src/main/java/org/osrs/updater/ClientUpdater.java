@@ -6,7 +6,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import javax.swing.*;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.Attributes;
@@ -28,10 +30,14 @@ public class ClientUpdater {
     private ClientUpdater() {
     }
 
+
     public boolean hasUpdate() {
         int internalVersion = getCurrentVersion();
         int latestVersion = getLatestVersion();
 
+        if (internalVersion == -1 || latestVersion == -1) return false;
+
+        JOptionPane.showMessageDialog(null, internalVersion + ":" + latestVersion);
         return latestVersion > internalVersion;
     }
 
@@ -55,9 +61,27 @@ public class ClientUpdater {
         return new File("./update.tmp").exists();
     }
 
-    public void applyLocalUpdate() {
-        File f = new File("./update.tmp");
-        f.renameTo(new File("./osrs.jar"));
+    public void flagUpdate() { // TODO: Client Update Fix
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File f = new File("./update.tmp");
+                if (!f.exists()) return;
+                File old = new File("./osrs.jar");
+                if (old.exists()) {
+                    old.delete();
+                }
+                f.renameTo(new File("./osrs.jar"));
+            }
+        }));
+    }
+
+    public void restart() throws IOException, URISyntaxException {
+        String java_bin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+        File thisJar =  new File(ClientUpdater.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+
+        ProcessBuilder builder = new ProcessBuilder(java_bin, "-jar", thisJar.getPath());
+        builder.start();
         System.exit(0);
     }
 
@@ -80,10 +104,12 @@ public class ClientUpdater {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
+                    return -1;
                 }
             }
         } catch (IOException e1) {
             e1.printStackTrace();
+            return -1;
         }
         return -1;
     }

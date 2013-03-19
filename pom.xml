@@ -151,6 +151,6 @@
                 </executions>
             </plugin>
         </plugins>
-        <finalName>osrs-client-SNAPSHOT</finalName>
+        <finalName>osrs</finalName>
     </build>
 </project>

@@ -41,7 +41,7 @@ public class ClientContext implements AppletContext {
         System.out.println("APPLET> ClientContext.showDocument(\"" + url + "\")");
         if (url.getFile().indexOf("js5connect_outofdate") > 0) {
             try {
-                System.err.println("LAUNCHER> Game has been updated!");
+                System.err.println("LAUNCHER> Game has been updated!"); // TODO: RS Update fix.
                 FieldIdentifier.update();
             } catch (Exception e) {
                 e.printStackTrace();
